@@ -37,8 +37,10 @@ then
     System.out.println("Penalized 1 for annotations: " + $a1 + " and " + $a2);
 end
 
-// devuelve un valor numérico representando el orden de elución de los tipos de lípidos.
-// cuanto mayor es el valor, más tarde debería eluírse el lípido.
+/**
+ * Devuelve un valor numérico representando el orden de elución de los tipos de lípidos.
+ * Cuanto mayor sea el valor, más tarde debería eluírse el lípido.
+ */
 function int lipidClassOrder(String lipidType) {
     if (lipidType == "PG") return 0;
     if (lipidType == "PE") return 1;
@@ -50,7 +52,7 @@ function int lipidClassOrder(String lipidType) {
 }
 
 //REGLAS POSITIVAS
-rule " Score 1 for increasing carbonos and RT (same lipid type and doubleBoundsCount)"
+rule "Carbonos ↑ → RT ↑ (misma clase y doble enlace)"
 when
     $a1 : /annotations[ $rt1 : rtMin, $l1 : lipid ] //anotacion 1=tiempo de retencion, y lipido
     $a2 : /annotations[ // se busca una segunda anotacion con:
@@ -65,7 +67,7 @@ then
     $a2.addScore(1);
 end
 
-rule "Score 1 for increasing doubleBoundsCount but decreasing RT "
+rule "Dobles enlaces ↑ → RT ↓"
 when
     $a1 : /annotations[ $rt1 : rtMin, $l1 : lipid ]
     $a2 : /annotations[
@@ -81,7 +83,7 @@ then
     $a2.addScore(1);
 end
 
-rule "Score 1 if correct order by lipid class "
+rule "Orden correcto por clase lipídica según el órden esperado de elución"
 when
     $a1 : /annotations[ $rt1 : rtMin, $l1 : lipid ]
     $a2 : /annotations[
@@ -97,7 +99,7 @@ then
 end
 
 // REGLAS NEGATIVAS
-rule " Penalize 1 if increasing carbons but decreasing RT"
+rule "Carbonos ↑ pero RT ↓ → penalización"
 when
     $a1 : /annotations[ $rt1 : rtMin, $l1 : lipid ]
     $a2 : /annotations[
@@ -112,7 +114,7 @@ then
     $a2.addScore(-1);
 end
 
-rule "Penalize 1 if increasing doubleBondsCount and increaisng RT "
+rule "Dobles enlaces ↑ pero RT ↑ → penalización"
 when
     $a1 : /annotations[ $rt1 : rtMin, $l1 : lipid ]
     $a2 : /annotations[
@@ -128,7 +130,7 @@ then
 end
 
 
-rule "Penalize 1 if incorrect order by lipid class"
+rule "Clase lipídica mal ordenada → penalización"
 when
     $a1 : /annotations[ $rt1 : rtMin, $l1 : lipid ]
     $a2 : /annotations[
