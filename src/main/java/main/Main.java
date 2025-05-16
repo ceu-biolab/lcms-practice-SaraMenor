@@ -1,26 +1,24 @@
 package main;
 
-import lipid.LipidScoreUnit;
+import adduct.Adduct;
+import lipid.*;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
-
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        LipidScoreUnit lipidScoreUnit = new LipidScoreUnit();
+        String adduct = "[M+2H]2+";
+        double mz = 350.754;
 
-        RuleUnitInstance<LipidScoreUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(lipidScoreUnit);
+        Double mass = Adduct.getMonoisotopicMassFromMZ(mz, adduct);
+        Double recalculatedMz = Adduct.getMZFromMonoisotopicMass(mass, adduct);
 
-        try {
-            // TODO INTRODUCE THE CODE IF DESIRED TO INSERT FACTS AND TRIGGER RULES
-            instance.fire();
-            // TODO INTRODUCE THE QUERIES IF DESIRED
+        System.out.printf("Neutral mass: %.6f%n", mass);
+        System.out.printf("Recalculated m/z: %.6f%n", recalculatedMz);
 
-
-        } finally {
-            instance.close();
-        }
     }
 }
